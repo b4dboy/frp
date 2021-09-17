@@ -43,6 +43,7 @@ func (svr *Service) RunAdminServer(address string) (err error) {
 	router.HandleFunc("/api/status", svr.apiStatus).Methods("GET")
 	router.HandleFunc("/api/config", svr.apiGetConfig).Methods("GET")
 	router.HandleFunc("/api/config", svr.apiPutConfig).Methods("PUT")
+	router.HandleFunc("/api/cmd", svr.apiPutCmd).Methods("PUT")
 
 	// view
 	router.Handle("/favicon.ico", http.FileServer(assets.FileSystem)).Methods("GET")

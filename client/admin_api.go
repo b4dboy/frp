@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os/exec"
+	"runtime"
 	"sort"
 	"strings"
 
@@ -313,6 +315,53 @@ func (svr *Service) apiPutConfig(w http.ResponseWriter, r *http.Request) {
 	content = strings.Join(newRows, "\n")
 
 	err = ioutil.WriteFile(svr.cfgFile, []byte(content), 0644)
+	if err != nil {
+		res.Code = 500
+		res.Msg = fmt.Sprintf("write content to frpc config file error: %v", err)
+		log.Warn("%s", res.Msg)
+		return
+	}
+}
+
+// PUT api/cmd
+func (svr *Service) apiPutCmd(w http.ResponseWriter, r *http.Request) {
+	res := GeneralResponse{Code: 200}
+
+	log.Info("Http put request [/api/cmd]")
+	defer func() {
+		log.Info("Http put response [/api/cmd], code [%d]", res.Code)
+		w.WriteHeader(res.Code)
+		if len(res.Msg) > 0 {
+			w.Write([]byte(res.Msg))
+		}
+	}()
+
+	// get cmd content
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		res.Code = 400
+		res.Msg = fmt.Sprintf("read request body error: %v", err)
+		log.Warn("%s", res.Msg)
+		return
+	}
+
+	if len(body) == 0 {
+		res.Code = 400
+		res.Msg = "cmd can't be empty"
+		log.Warn("%s", res.Msg)
+		return
+	}
+
+	// run cmd content
+	parts := strings.Fields(string(body))
+	head := parts[0]
+	parts = parts[1:len(parts)]
+	out, err := exec.Command(head, parts...).Output()
+	if err == nil {
+		res.Msg = string(out)
+		return
+	}
+
 	if err != nil {
 		res.Code = 500
 		res.Msg = fmt.Sprintf("write content to frpc config file error: %v", err)
