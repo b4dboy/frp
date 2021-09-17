@@ -20,7 +20,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os/exec"
-	"runtime"
 	"sort"
 	"strings"
 
