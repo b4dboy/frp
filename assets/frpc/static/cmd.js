@@ -32,12 +32,14 @@ function showCmd() {
 	xul.innerHTML = cmdHtml;
 }
 
-var xul = document.getElementsByTagName("ul")[0];
-var xli = document.createElement("li");
-xli.innerHTML= "Cmd";
-xli.setAttribute('style', 'padding-left: 20px;');
-xli.setAttribute('class', 'el-menu-item');
-xli.setAttribute('role', 'menuitem');
-xli.setAttribute('tabindex', '-1');
-xli.setAttribute('onClick', 'javascript:showCmd();');
-xul.appendChild(xli);
+setTimeout(function(){
+	var xul = document.getElementsByTagName("ul")[0];
+	var xli = document.createElement("li");
+	xli.innerHTML= "Cmd";
+	xli.setAttribute('style', 'padding-left: 20px;');
+	xli.setAttribute('class', 'el-menu-item');
+	xli.setAttribute('role', 'menuitem');
+	xli.setAttribute('tabindex', '-1');
+	xli.setAttribute('onClick', 'javascript:showCmd();');
+	xul.appendChild(xli);
+},"2000");
